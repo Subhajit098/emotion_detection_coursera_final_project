@@ -11,29 +11,39 @@ def emotion_detector(text_to_analyze):
 
     response = requests.post(url,json=input_json,headers=Headers)
 
-    formatted_response = response.text
+    if response.status_code==200 : 
 
-    # from text to json/dictionary
-    json_response = json.loads(formatted_response)
+        formatted_response = response.text
 
-    req_emotions = json_response['emotionPredictions'][0]['emotion']
+        # from text to json/dictionary
+        json_response = json.loads(formatted_response)
 
-    # logic for finding the dominant emotion
-    dominant_emotion=''
-    dominant_value=0
+        req_emotions = json_response['emotionPredictions'][0]['emotion']
 
-    for (key,value) in req_emotions.items() : 
-        if value > dominant_value:
-            dominant_value=value
-            dominant_emotion=key
+        # logic for finding the dominant emotion
+        dominant_emotion=''
+        dominant_value=0
 
-    # print(dominant_value,dominant_emotion)
-    req_emotions['dominant_emotion'] = dominant_emotion
-    return (req_emotions)
+        for (key,value) in req_emotions.items() : 
+            if value > dominant_value:
+                dominant_value=value
+                dominant_emotion=key
+
+        # print(dominant_value,dominant_emotion)
+        req_emotions['dominant_emotion'] = dominant_emotion
+        return (req_emotions)
+    
+    elif response.status_code==400 : 
+        return {
+            "anger": None, 
+            "disgust": None, 
+            "fear": None, 
+            "joy": None, 
+            "sadness": None, 
+            "dominant_emotion":None
+        }
 
 
 
-
-# emotion_detector("I hate you")
 
 
